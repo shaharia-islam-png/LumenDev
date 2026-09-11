@@ -1,450 +1,683 @@
-```javascript
-(function () {
-  "use strict";
+"use strict";
 
-  /**
-   * Toggle scrolled class
-   */
+/* ================================
+   LumenDev Main JavaScript
+================================ */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  /* ================================
+     Toggle Scrolled
+  ================================= */
+
   function toggleScrolled() {
-    const selectBody = document.querySelector("body");
-    const selectHeader = document.querySelector("#header");
+    const body = document.querySelector("body");
+    const header = document.querySelector("#header");
 
-    if (!selectBody || !selectHeader) return;
+    if (!body || !header) {
+      return;
+    }
 
     if (
-      !selectHeader.classList.contains("scroll-up-sticky") &&
-      !selectHeader.classList.contains("sticky-top") &&
-      !selectHeader.classList.contains("fixed-top")
+      !header.classList.contains("scroll-up-sticky") &&
+      !header.classList.contains("sticky-top") &&
+      !header.classList.contains("fixed-top")
     ) {
       return;
     }
 
     if (window.scrollY > 100) {
-      selectBody.classList.add("scrolled");
+      body.classList.add("scrolled");
     } else {
-      selectBody.classList.remove("scrolled");
+      body.classList.remove("scrolled");
     }
   }
 
-  document.addEventListener("scroll", toggleScrolled);
+  window.addEventListener("scroll", toggleScrolled);
   window.addEventListener("load", toggleScrolled);
 
 
-  /**
-   * Mobile nav toggle
-   */
-  const mobileNavToggleBtn = document.querySelector(".mobile-nav-toggle");
+  /* ================================
+     Mobile Navigation
+  ================================= */
 
-  function mobileNavToogle() {
+  const mobileNavToggle =
+    document.querySelector(".mobile-nav-toggle");
+
+  function mobileNavToggleFunction() {
     const body = document.querySelector("body");
 
-    if (!body || !mobileNavToggleBtn) return;
+    if (!body || !mobileNavToggle) {
+      return;
+    }
 
     body.classList.toggle("mobile-nav-active");
-    mobileNavToggleBtn.classList.toggle("bi-list");
-    mobileNavToggleBtn.classList.toggle("bi-x");
+
+    mobileNavToggle.classList.toggle("bi-list");
+    mobileNavToggle.classList.toggle("bi-x");
   }
 
-  if (mobileNavToggleBtn) {
-    mobileNavToggleBtn.addEventListener("click", mobileNavToogle);
+  if (mobileNavToggle) {
+    mobileNavToggle.addEventListener(
+      "click",
+      mobileNavToggleFunction
+    );
   }
 
 
-  /**
-   * Hide mobile nav on same-page/hash links
-   */
-  document.querySelectorAll("#navmenu a").forEach(function (navmenu) {
-    navmenu.addEventListener("click", function () {
-      const mobileNavActive = document.querySelector(".mobile-nav-active");
+  /* ================================
+     Mobile Nav Links
+  ================================= */
+
+  const navLinks =
+    document.querySelectorAll("#navmenu a");
+
+  navLinks.forEach(function (link) {
+
+    link.addEventListener("click", function () {
+
+      const mobileNavActive =
+        document.querySelector(".mobile-nav-active");
 
       if (mobileNavActive) {
-        mobileNavToogle();
+        mobileNavToggleFunction();
       }
+
     });
+
   });
 
 
-  /**
-   * Toggle mobile nav dropdowns
-   */
-  document
-    .querySelectorAll(".navmenu .toggle-dropdown")
-    .forEach(function (navmenu) {
-      navmenu.addEventListener("click", function (e) {
-        e.preventDefault();
+  /* ================================
+     Mobile Dropdown
+  ================================= */
 
-        this.parentNode.classList.toggle("active");
+  const dropdownToggles =
+    document.querySelectorAll(
+      ".navmenu .toggle-dropdown"
+    );
 
-        if (this.parentNode.nextElementSibling) {
-          this.parentNode.nextElementSibling.classList.toggle(
-            "dropdown-active"
-          );
-        }
+  dropdownToggles.forEach(function (toggle) {
 
-        e.stopImmediatePropagation();
-      });
+    toggle.addEventListener("click", function (event) {
+
+      event.preventDefault();
+
+      const parent = this.parentNode;
+
+      if (parent) {
+        parent.classList.toggle("active");
+      }
+
+      if (parent && parent.nextElementSibling) {
+
+        parent.nextElementSibling.classList.toggle(
+          "dropdown-active"
+        );
+
+      }
+
+      event.stopPropagation();
+
     });
 
+  });
 
-  /**
-   * Preloader
-   */
-  const preloader = document.querySelector("#preloader");
+
+  /* ================================
+     Preloader
+  ================================= */
+
+  const preloader =
+    document.querySelector("#preloader");
 
   if (preloader) {
+
     window.addEventListener("load", function () {
+
       preloader.remove();
+
     });
+
   }
 
 
-  /**
-   * Scroll top button
-   */
-  const scrollTop = document.querySelector(".scroll-top");
+  /* ================================
+     Scroll Top
+  ================================= */
+
+  const scrollTop =
+    document.querySelector(".scroll-top");
 
   function toggleScrollTop() {
-    if (!scrollTop) return;
+
+    if (!scrollTop) {
+      return;
+    }
 
     if (window.scrollY > 100) {
       scrollTop.classList.add("active");
     } else {
       scrollTop.classList.remove("active");
     }
+
   }
 
   if (scrollTop) {
-    scrollTop.addEventListener("click", function (e) {
-      e.preventDefault();
 
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    });
+    scrollTop.addEventListener(
+      "click",
+      function (event) {
+
+        event.preventDefault();
+
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+
+      }
+    );
+
   }
 
   window.addEventListener("load", toggleScrollTop);
-  document.addEventListener("scroll", toggleScrollTop);
+  window.addEventListener("scroll", toggleScrollTop);
 
 
-  /**
-   * Animation on scroll
-   */
+  /* ================================
+     AOS Animation
+  ================================= */
+
   function aosInit() {
-    if (typeof AOS === "undefined") return;
+
+    if (typeof AOS === "undefined") {
+      return;
+    }
 
     AOS.init({
       duration: 600,
       easing: "ease-in-out",
       once: true,
-      mirror: false,
+      mirror: false
     });
+
   }
 
   window.addEventListener("load", aosInit);
 
 
-  /**
-   * Initiate GLightbox
-   */
+  /* ================================
+     GLightbox
+  ================================= */
+
   if (typeof GLightbox !== "undefined") {
+
     GLightbox({
-      selector: ".glightbox",
+      selector: ".glightbox"
     });
+
   }
 
 
-  /**
-   * Initiate Pure Counter
-   */
+  /* ================================
+     Pure Counter
+  ================================= */
+
   if (typeof PureCounter !== "undefined") {
+
     new PureCounter();
+
   }
 
 
-  /**
-   * Animate the skills items on reveal
-   */
-  const skillsAnimation = document.querySelectorAll(".skills-animation");
+  /* ================================
+     Skills Animation
+  ================================= */
 
   if (typeof Waypoint !== "undefined") {
-    skillsAnimation.forEach(function (item) {
+
+    const skills =
+      document.querySelectorAll(
+        ".skills-animation"
+      );
+
+    skills.forEach(function (item) {
+
       new Waypoint({
+
         element: item,
+
         offset: "80%",
 
         handler: function () {
-          const progress = item.querySelectorAll(
-            ".progress .progress-bar"
-          );
 
-          progress.forEach(function (el) {
-            el.style.width =
-              el.getAttribute("aria-valuenow") + "%";
+          const progress =
+            item.querySelectorAll(
+              ".progress .progress-bar"
+            );
+
+          progress.forEach(function (bar) {
+
+            const value =
+              bar.getAttribute(
+                "aria-valuenow"
+              );
+
+            if (value) {
+              bar.style.width = value + "%";
+            }
+
           });
-        },
+
+        }
+
       });
+
     });
+
   }
 
 
-  /**
-   * Init swiper sliders
-   */
+  /* ================================
+     Swiper
+  ================================= */
+
   function initSwiper() {
-    if (typeof Swiper === "undefined") return;
 
-    document
-      .querySelectorAll(".init-swiper")
-      .forEach(function (swiperElement) {
-        const configElement =
-          swiperElement.querySelector(".swiper-config");
+    if (typeof Swiper === "undefined") {
+      return;
+    }
 
-        if (!configElement) return;
+    const swiperElements =
+      document.querySelectorAll(
+        ".init-swiper"
+      );
 
-        let config;
+    swiperElements.forEach(function (swiperElement) {
 
-        try {
-          config = JSON.parse(
-            configElement.innerHTML.trim()
-          );
-        } catch (error) {
-          console.error("Swiper configuration error:", error);
-          return;
-        }
+      const configElement =
+        swiperElement.querySelector(
+          ".swiper-config"
+        );
 
-        if (
-          swiperElement.classList.contains("swiper-tab") &&
-          typeof initSwiperWithCustomPagination === "function"
-        ) {
-          initSwiperWithCustomPagination(
-            swiperElement,
-            config
-          );
-        } else {
-          new Swiper(swiperElement, config);
-        }
-      });
+      if (!configElement) {
+        return;
+      }
+
+      let config = {};
+
+      try {
+
+        config = JSON.parse(
+          configElement.textContent.trim()
+        );
+
+      } catch (error) {
+
+        console.error(
+          "Swiper configuration error:",
+          error
+        );
+
+        return;
+      }
+
+      if (
+        swiperElement.classList.contains(
+          "swiper-tab"
+        ) &&
+        typeof initSwiperWithCustomPagination ===
+          "function"
+      ) {
+
+        initSwiperWithCustomPagination(
+          swiperElement,
+          config
+        );
+
+      } else {
+
+        new Swiper(
+          swiperElement,
+          config
+        );
+
+      }
+
+    });
+
   }
 
-  window.addEventListener("load", initSwiper);
+  window.addEventListener(
+    "load",
+    initSwiper
+  );
 
 
-  /**
-   * Init isotope layout and filters
-   */
-  if (
-    typeof imagesLoaded !== "undefined" &&
-    typeof Isotope !== "undefined"
-  ) {
-    document
-      .querySelectorAll(".isotope-layout")
-      .forEach(function (isotopeItem) {
-        const layout =
-          isotopeItem.getAttribute("data-layout") ||
-          "masonry";
+  /* ================================
+     Isotope
+  ================================= */
 
-        const filter =
-          isotopeItem.getAttribute("data-default-filter") ||
-          "*";
+  function initIsotope() {
 
-        const sort =
-          isotopeItem.getAttribute("data-sort") ||
-          "original-order";
+    if (
+      typeof imagesLoaded === "undefined" ||
+      typeof Isotope === "undefined"
+    ) {
+      return;
+    }
 
-        let initIsotope = null;
+    const isotopeLayouts =
+      document.querySelectorAll(
+        ".isotope-layout"
+      );
 
-        const container =
-          isotopeItem.querySelector(".isotope-container");
+    isotopeLayouts.forEach(function (layoutElement) {
 
-        if (!container) return;
+      const container =
+        layoutElement.querySelector(
+          ".isotope-container"
+        );
 
-        imagesLoaded(container, function () {
-          initIsotope = new Isotope(container, {
-            itemSelector: ".isotope-item",
-            layoutMode: layout,
-            filter: filter,
-            sortBy: sort,
-          });
-        });
+      if (!container) {
+        return;
+      }
 
-        isotopeItem
-          .querySelectorAll(".isotope-filters li")
-          .forEach(function (filters) {
-            filters.addEventListener("click", function () {
-              const activeFilter =
-                isotopeItem.querySelector(
-                  ".isotope-filters .filter-active"
-                );
+      const layout =
+        layoutElement.getAttribute(
+          "data-layout"
+        ) || "masonry";
 
-              if (activeFilter) {
-                activeFilter.classList.remove(
-                  "filter-active"
-                );
-              }
+      const filter =
+        layoutElement.getAttribute(
+          "data-default-filter"
+        ) || "*";
 
-              this.classList.add("filter-active");
+      const sort =
+        layoutElement.getAttribute(
+          "data-sort"
+        ) || "original-order";
 
-              if (initIsotope) {
-                initIsotope.arrange({
-                  filter: this.getAttribute("data-filter"),
-                });
-              }
+      let isotope = null;
 
-              if (typeof aosInit === "function") {
-                aosInit();
-              }
-            });
-          });
+      imagesLoaded(
+        container,
+        function () {
+
+          isotope = new Isotope(
+            container,
+            {
+              itemSelector:
+                ".isotope-item",
+
+              layoutMode:
+                layout,
+
+              filter:
+                filter,
+
+              sortBy:
+                sort
+            }
+          );
+
+        }
+      );
+
+
+      const filters =
+        layoutElement.querySelectorAll(
+          ".isotope-filters li"
+        );
+
+      filters.forEach(function (filterButton) {
+
+        filterButton.addEventListener(
+          "click",
+          function () {
+
+            const active =
+              layoutElement.querySelector(
+                ".isotope-filters .filter-active"
+              );
+
+            if (active) {
+
+              active.classList.remove(
+                "filter-active"
+              );
+
+            }
+
+            this.classList.add(
+              "filter-active"
+            );
+
+            const filterValue =
+              this.getAttribute(
+                "data-filter"
+              );
+
+            if (isotope) {
+
+              isotope.arrange({
+                filter: filterValue
+              });
+
+            }
+
+          }
+        );
+
       });
+
+    });
+
   }
 
+  window.addEventListener(
+    "load",
+    initIsotope
+  );
 
-  /**
-   * Pricing Toggle
-   */
+
+  /* ================================
+     Pricing
+  ================================= */
+
   function initPricing() {
+
     const cards =
-      document.querySelectorAll(".option-card");
+      document.querySelectorAll(
+        ".option-card"
+      );
 
-    const totalPriceEls =
-      document.querySelectorAll("#total-price");
+    const totalPrices =
+      document.querySelectorAll(
+        "#total-price"
+      );
 
-    const planBadgeEls =
-      document.querySelectorAll("#plan-badge");
+    const badges =
+      document.querySelectorAll(
+        "#plan-badge"
+      );
 
-    const summaryTierLabelEls =
-      document.querySelectorAll("#summary-tier-label");
+    const tierLabels =
+      document.querySelectorAll(
+        "#summary-tier-label"
+      );
 
-    if (!cards.length) return;
+    if (!cards.length) {
+      return;
+    }
 
 
     function updatePricing() {
-      let designSelected = false;
-      let developmentSelected = false;
-      let fastSelected = false;
+
+      let design = false;
+      let development = false;
+      let fast = false;
 
 
       cards.forEach(function (card) {
+
         const checkbox =
-          card.querySelector(".toggle-input");
+          card.querySelector(
+            ".toggle-input"
+          );
 
-        const featureKey =
-          card.getAttribute("data-feature");
+        if (!checkbox) {
+          return;
+        }
 
-        if (!checkbox) return;
+        const feature =
+          card.getAttribute(
+            "data-feature"
+          );
 
 
         if (checkbox.checked) {
-          card.classList.add("active");
 
-          if (featureKey === "design") {
-            designSelected = true;
+          card.classList.add(
+            "active"
+          );
+
+          if (feature === "design") {
+            design = true;
           }
 
-          if (featureKey === "development") {
-            developmentSelected = true;
+          if (feature === "development") {
+            development = true;
           }
 
-          if (featureKey === "fast") {
-            fastSelected = true;
+          if (feature === "fast") {
+            fast = true;
           }
+
         } else {
-          card.classList.remove("active");
+
+          card.classList.remove(
+            "active"
+          );
+
         }
 
 
         const featureItems =
           document.querySelectorAll(
             '[data-feature-item="' +
-              featureKey +
-              '"]'
+            feature +
+            '"]'
           );
 
+        featureItems.forEach(
+          function (item) {
 
-        featureItems.forEach(function (item) {
-          if (checkbox.checked) {
-            item.style.setProperty(
-              "display",
-              "flex",
-              "important"
-            );
-          } else {
-            item.style.setProperty(
-              "display",
-              "none",
-              "important"
-            );
+            if (checkbox.checked) {
+
+              item.style.setProperty(
+                "display",
+                "flex",
+                "important"
+              );
+
+            } else {
+
+              item.style.setProperty(
+                "display",
+                "none",
+                "important"
+              );
+
+            }
+
           }
-        });
+        );
+
       });
 
 
-      /**
-       * Calculate price
-       */
+      /* Price */
+
       let total = 0;
 
-      if (designSelected) {
+      if (design) {
         total = total + 200;
       }
 
-      if (developmentSelected) {
+      if (development) {
         total = total + 300;
       }
 
-      if (fastSelected) {
+      if (fast) {
         total = total + 150;
       }
 
 
-      /**
-       * Update price
-       */
-      totalPriceEls.forEach(function (element) {
-        element.innerText = total;
-      });
+      totalPrices.forEach(
+        function (element) {
+
+          element.innerText = total;
+
+        }
+      );
 
 
-      /**
-       * Update service name
-       */
+      /* Service Name */
+
       let serviceName = "";
 
-      if (designSelected) {
+      if (design) {
         serviceName = "Design";
       }
 
-      if (developmentSelected) {
+      if (development) {
+
         if (serviceName !== "") {
-          serviceName = serviceName + " & ";
+          serviceName =
+            serviceName + " & ";
         }
 
-        serviceName = serviceName + "Development";
+        serviceName =
+          serviceName + "Development";
+
       }
 
-      if (fastSelected) {
+      if (fast) {
+
         if (serviceName !== "") {
-          serviceName = serviceName + " & ";
+          serviceName =
+            serviceName + " & ";
         }
 
-        serviceName = serviceName + "Fast";
+        serviceName =
+          serviceName + "Fast";
+
       }
 
 
-      summaryTierLabelEls.forEach(function (element) {
-        if (serviceName !== "") {
-          element.innerText = serviceName;
-        } else {
-          element.innerText = "No Services Selected";
+      tierLabels.forEach(
+        function (element) {
+
+          if (serviceName !== "") {
+
+            element.innerText =
+              serviceName;
+
+          } else {
+
+            element.innerText =
+              "No Services Selected";
+
+          }
+
         }
-      });
+      );
 
 
-      /**
-       * Update badge
-       */
+      /* Badge */
+
       let badgeText = "None";
 
       let badgeClass =
@@ -452,187 +685,305 @@
 
 
       if (
-        designSelected &&
-        developmentSelected &&
-        fastSelected
+        design &&
+        development &&
+        fast
       ) {
+
         badgeText = "Premium";
 
         badgeClass =
           "badge px-3 py-1 rounded-pill bg-success-subtle text-success fw-bold small";
+
       } else if (
-        designSelected &&
-        developmentSelected
+        design &&
+        development
       ) {
+
         badgeText = "Standard";
 
         badgeClass =
           "badge px-3 py-1 rounded-pill bg-warning-subtle text-warning fw-bold small";
+
       } else if (
-        designSelected ||
-        developmentSelected ||
-        fastSelected
+        design ||
+        development ||
+        fast
       ) {
+
         badgeText = "Basic";
 
         badgeClass =
           "badge px-3 py-1 rounded-pill bg-info-subtle text-info fw-bold small";
+
       }
 
 
-      planBadgeEls.forEach(function (element) {
-        element.innerText = badgeText;
-        element.className = badgeClass;
-      });
+      badges.forEach(
+        function (element) {
+
+          element.innerText =
+            badgeText;
+
+          element.className =
+            badgeClass;
+
+        }
+      );
+
     }
 
 
-    /**
-     * Checkbox change
-     */
+    /* Checkbox */
+
     cards.forEach(function (card) {
+
       const checkbox =
-        card.querySelector(".toggle-input");
-
-      if (!checkbox) return;
-
-
-      checkbox.addEventListener("change", function () {
-        updatePricing();
-      });
-
-
-      /**
-       * Card click
-       */
-      card.addEventListener("click", function (e) {
-        if (e.target.closest(".switch")) {
-          return;
-        }
-
-        checkbox.checked = !checkbox.checked;
-
-        updatePricing();
-      });
-    });
-
-
-    /**
-     * Initial calculation
-     */
-    updatePricing();
-  }
-
-
-  if (document.readyState === "loading") {
-    document.addEventListener(
-      "DOMContentLoaded",
-      initPricing
-    );
-  } else {
-    initPricing();
-  }
-
-
-  /**
-   * Frequently Asked Questions Toggle
-   */
-  document
-    .querySelectorAll(
-      ".faq-item h3, .faq-item .faq-toggle, .faq-item .faq-header"
-    )
-    .forEach(function (faqItem) {
-      faqItem.addEventListener("click", function () {
-        faqItem.parentNode.classList.toggle(
-          "faq-active"
+        card.querySelector(
+          ".toggle-input"
         );
-      });
-    });
 
-
-  /**
-   * Correct scrolling position upon page load
-   */
-  window.addEventListener("load", function () {
-    if (window.location.hash) {
-      let section;
-
-      try {
-        section = document.querySelector(
-          window.location.hash
-        );
-      } catch (error) {
+      if (!checkbox) {
         return;
       }
 
-      if (section) {
-        setTimeout(function () {
-          const scrollMarginTop =
-            getComputedStyle(section).scrollMarginTop;
 
-          window.scrollTo({
-            top:
-              section.offsetTop -
-              parseInt(scrollMarginTop || 0),
-            behavior: "smooth",
-          });
-        }, 100);
+      checkbox.addEventListener(
+        "change",
+        function () {
+
+          updatePricing();
+
+        }
+      );
+
+
+      /* Card click */
+
+      card.addEventListener(
+        "click",
+        function (event) {
+
+          if (
+            event.target.closest(
+              ".switch"
+            )
+          ) {
+            return;
+          }
+
+          checkbox.checked =
+            !checkbox.checked;
+
+          updatePricing();
+
+        }
+      );
+
+    });
+
+
+    updatePricing();
+
+  }
+
+
+  initPricing();
+
+
+  /* ================================
+     FAQ
+  ================================= */
+
+  const faqItems =
+    document.querySelectorAll(
+      ".faq-item h3, .faq-item .faq-toggle, .faq-item .faq-header"
+    );
+
+  faqItems.forEach(function (faqItem) {
+
+    faqItem.addEventListener(
+      "click",
+      function () {
+
+        if (faqItem.parentNode) {
+
+          faqItem.parentNode.classList.toggle(
+            "faq-active"
+          );
+
+        }
+
       }
-    }
+    );
+
   });
 
 
-  /**
-   * Navmenu Scrollspy
-   */
-  const navmenulinks =
-    document.querySelectorAll(".navmenu a");
-
-  function navmenuScrollspy() {
-    navmenulinks.forEach(function (navmenulink) {
-      if (!navmenulink.hash) return;
-
-      let section;
-
-      try {
-        section = document.querySelector(
-          navmenulink.hash
-        );
-      } catch (error) {
-        return;
-      }
-
-      if (!section) return;
-
-      const position = window.scrollY + 200;
-
-      if (
-        position >= section.offsetTop &&
-        position <=
-          section.offsetTop + section.offsetHeight
-      ) {
-        document
-          .querySelectorAll(".navmenu a.active")
-          .forEach(function (link) {
-            link.classList.remove("active");
-          });
-
-        navmenulink.classList.add("active");
-      } else {
-        navmenulink.classList.remove("active");
-      }
-    });
-  }
+  /* ================================
+     Hash Scroll
+  ================================= */
 
   window.addEventListener(
     "load",
-    navmenuScrollspy
+    function () {
+
+      if (!window.location.hash) {
+        return;
+      }
+
+      let section = null;
+
+      try {
+
+        section =
+          document.querySelector(
+            window.location.hash
+          );
+
+      } catch (error) {
+
+        return;
+
+      }
+
+
+      if (section) {
+
+        setTimeout(
+          function () {
+
+            const margin =
+              getComputedStyle(
+                section
+              ).scrollMarginTop;
+
+            const marginValue =
+              parseInt(
+                margin || "0"
+              );
+
+
+            window.scrollTo({
+
+              top:
+                section.offsetTop -
+                marginValue,
+
+              behavior:
+                "smooth"
+
+            });
+
+          },
+          100
+        );
+
+      }
+
+    }
   );
 
-  document.addEventListener(
+
+  /* ================================
+     Nav Scrollspy
+  ================================= */
+
+  const navMenuLinks =
+    document.querySelectorAll(
+      ".navmenu a"
+    );
+
+
+  function navMenuScrollspy() {
+
+    navMenuLinks.forEach(
+      function (link) {
+
+        if (!link.hash) {
+          return;
+        }
+
+
+        let section = null;
+
+        try {
+
+          section =
+            document.querySelector(
+              link.hash
+            );
+
+        } catch (error) {
+
+          return;
+
+        }
+
+
+        if (!section) {
+          return;
+        }
+
+
+        const position =
+          window.scrollY + 200;
+
+
+        if (
+          position >=
+            section.offsetTop &&
+          position <=
+            section.offsetTop +
+            section.offsetHeight
+        ) {
+
+          document
+            .querySelectorAll(
+              ".navmenu a.active"
+            )
+            .forEach(
+              function (activeLink) {
+
+                activeLink.classList.remove(
+                  "active"
+                );
+
+              }
+            );
+
+
+          link.classList.add(
+            "active"
+          );
+
+        } else {
+
+          link.classList.remove(
+            "active"
+          );
+
+        }
+
+      }
+    );
+
+  }
+
+
+  window.addEventListener(
+    "load",
+    navMenuScrollspy
+  );
+
+  window.addEventListener(
     "scroll",
-    navmenuScrollspy
+    navMenuScrollspy
   );
 
-})();
-```
+
+  console.log(
+    "LumenDev main.js loaded successfully"
+  );
+
+});
