@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "myserver/wsgi.py",
+      "src": "LumenDev/myserver/wsgi.py",
       "use": "@vercel/python",
       "config": { "maxLambdaSize": "15mb", "runtime": "python3.9" }
     },
@@ -19,7 +19,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "myserver/wsgi.py"
+      "dest": "LumenDev/myserver/wsgi.py"
     }
   ]
 }
