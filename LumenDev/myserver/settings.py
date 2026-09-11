@@ -57,13 +57,21 @@ TEMPLATES = [
 WSGI_APPLICATION = 'myserver.wsgi.application'
 
 # Database Configuration
+# Database Configuration
 DATABASES = {
     'default': dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=600
+        conn_max_age=600,
+        conn_health_checks=True,
     )
 }
 
+# Fallback for Vercel read-only filesystem if sqlite is used without external database
+if os.environ.get('VERCEL'):
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': '/tmp/db.sqlite3',
+    }
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
