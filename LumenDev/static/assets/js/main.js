@@ -176,78 +176,198 @@
 
  /*
    * Pricing Toggle
-   */
-  function initPricing() {
-    const cards = document.querySelectorAll('.option-card');
-    const totalPriceEl = document.getElementById('total-price');
-    const planBadge = document.getElementById('plan-badge');
-    const summaryTierLabel = document.getElementById('summary-tier-label');
+  /*
+ * Pricing Toggle
+ */
+function initPricing() {
 
-    if (!cards.length) return;
+  const cards = document.querySelectorAll('.option-card');
+  const totalPriceEl = document.getElementById('total-price');
+  const planBadge = document.getElementById('plan-badge');
+  const summaryTierLabel = document.getElementById('summary-tier-label');
 
-    function updatePricing() {
-      let total = 0;
-      let activeNames = [];
-      let activeFeatures = [];
+  if (!cards.length) return;
 
-      cards.forEach(card => {
-        const checkbox = card.querySelector('.toggle-input');
-        const featureKey = card.getAttribute('data-feature');
-        const price = parseInt(card.getAttribute('data-price')) || 0;
-        const featureItems = document.querySelectorAll(`[data-feature-item="${featureKey}"]`);
-        const title = card.querySelector('h4').innerText;
+  function updatePricing() {
+
+    let designSelected = false;
+    let developmentSelected = false;
+    let fastSelected = false;
+
+    let activeNames = [];
+
+    cards.forEach(function(card) {
+
+      const checkbox = card.querySelector('.toggle-input');
+      const featureKey = card.getAttribute('data-feature');
+
+      if (!checkbox) return;
+
+      if (checkbox.checked) {
+
+        card.classList.add('active');
+
+        if (featureKey === 'design') {
+          designSelected = true;
+          activeNames.push('Design');
+        }
+
+        if (featureKey === 'development') {
+          developmentSelected = true;
+          activeNames.push('Development');
+        }
+
+        if (featureKey === 'fast') {
+          fastSelected = true;
+          activeNames.push('Fast');
+        }
+
+      } else {
+
+        card.classList.remove('active');
+
+      }
+
+      const featureItems = document.querySelectorAll(
+        '[data-feature-item="' + featureKey + '"]'
+      );
+
+      featureItems.forEach(function(item) {
 
         if (checkbox.checked) {
-          card.classList.add('active');
-          total += price;
-          activeNames.push(title);
-          activeFeatures.push(featureKey);
-          featureItems.forEach(item => item.style.setProperty('display', 'flex', 'important'));
+          item.style.setProperty('display', 'flex', 'important');
         } else {
-          card.classList.remove('active');
-          featureItems.forEach(item => item.style.setProperty('display', 'none', 'important'));
+          item.style.setProperty('display', 'none', 'important');
         }
+
       });
 
-      if (totalPriceEl) totalPriceEl.innerText = total;
-      if (summaryTierLabel) summaryTierLabel.innerText = activeNames.length > 0 ? activeNames.join(' & ') : 'No Services Selected';
-
-      if (planBadge) {
-        if (activeFeatures.includes('design') && activeFeatures.includes('development')) {
-          planBadge.innerText = 'Standard';
-          planBadge.className = 'badge px-3 py-1 rounded-pill bg-warning-subtle text-warning fw-bold small';
-        } else if (activeFeatures.length > 1) {
-          planBadge.innerText = 'Custom Bundle';
-          planBadge.className = 'badge px-3 py-1 rounded-pill bg-success-subtle text-success fw-bold small';
-        } else if (activeFeatures.length === 1) {
-          planBadge.innerText = 'Basic';
-          planBadge.className = 'badge px-3 py-1 rounded-pill bg-info-subtle text-info fw-bold small';
-        } else {
-          planBadge.innerText = 'None';
-          planBadge.className = 'badge px-3 py-1 rounded-pill bg-secondary-subtle text-secondary fw-bold small';
-        }
-      }
-    }
-
-    cards.forEach(card => {
-      const checkbox = card.querySelector('.toggle-input');
-      if (!checkbox) return;
-      checkbox.addEventListener('change', updatePricing);
-      card.addEventListener('click', (e) => {
-        if (e.target.closest('.switch')) return; 
-        checkbox.checked = !checkbox.checked;
-        updatePricing();
-      });
     });
 
-    updatePricing();
+
+    /* Calculate price from selected options */
+
+    let total = 0;
+
+    if (designSelected) {
+      total += 200;
+    }
+
+    if (developmentSelected) {
+      total += 300;
+    }
+
+    if (fastSelected) {
+      total += 150;
+    }
+
+
+    /* Update total price */
+
+    if (totalPriceEl) {
+      totalPriceEl.innerText = total;
+    }
+
+
+    /* Update service name */
+
+    if (summaryTierLabel) {
+
+      if (activeNames.length > 0) {
+        summaryTierLabel.innerText = activeNames.join(' & ');
+      } else {
+        summaryTierLabel.innerText = 'No Services Selected';
+      }
+
+    }
+
+
+    /* Update badge */
+
+    if (planBadge) {
+
+      if (designSelected && developmentSelected && fastSelected) {
+
+        planBadge.innerText = 'Premium';
+
+        planBadge.className =
+          'badge px-3 py-1 rounded-pill bg-success-subtle text-success fw-bold small';
+
+      } else if (designSelected && developmentSelected) {
+
+        planBadge.innerText = 'Standard';
+
+        planBadge.className =
+          'badge px-3 py-1 rounded-pill bg-warning-subtle text-warning fw-bold small';
+
+      } else if (designSelected || developmentSelected || fastSelected) {
+
+        planBadge.innerText = 'Basic';
+
+        planBadge.className =
+          'badge px-3 py-1 rounded-pill bg-info-subtle text-info fw-bold small';
+
+      } else {
+
+        planBadge.innerText = 'None';
+
+        planBadge.className =
+          'badge px-3 py-1 rounded-pill bg-secondary-subtle text-secondary fw-bold small';
+
+      }
+
+    }
+
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initPricing);
-  } else {
-    initPricing();
-  }
+
+  cards.forEach(function(card) {
+
+    const checkbox = card.querySelector('.toggle-input');
+
+    if (!checkbox) return;
+
+
+    /* Switch change */
+
+    checkbox.addEventListener('change', function() {
+      updatePricing();
+    });
+
+
+    /* Card click */
+
+    card.addEventListener('click', function(e) {
+
+      if (e.target.closest('.switch')) {
+        return;
+      }
+
+      checkbox.checked = !checkbox.checked;
+
+      updatePricing();
+
+    });
+
+  });
+
+
+  /* Initial price */
+
+  updatePricing();
+
+}
+
+
+if (document.readyState === 'loading') {
+
+  document.addEventListener('DOMContentLoaded', initPricing);
+
+} else {
+
+  initPricing();
+
+}
   /**
    * Frequently Asked Questions Toggle
    */
