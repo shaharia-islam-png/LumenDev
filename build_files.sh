@@ -1,4 +1,4 @@
 echo "BUILD START"
-python3.9 -m pip install --break-system-packages -r requirements.txt
-python3.9 LumenDev/manage.py collectstatic --noinput --clear
+python3 -m pip install -r requirements.txt --break-system-packages
+python3 LumenDev/manage.py collectstatic --noinput --clear
 echo "BUILD END"
