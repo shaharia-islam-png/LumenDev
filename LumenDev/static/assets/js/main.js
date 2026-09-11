@@ -177,226 +177,185 @@
  /*
    * Pricing Toggle
   /*
- * Pricing Toggle
- */
-/*
- * Pricing Toggle
- */
-function initPricing() {
+   * Pricing Toggle
+   */
+  function initPricing() {
+    const cards = document.querySelectorAll('.option-card');
+    const totalPriceEls = document.querySelectorAll('#total-price');
+    const planBadgeEls = document.querySelectorAll('#plan-badge');
+    const summaryTierLabelEls = document.querySelectorAll('#summary-tier-label');
 
-  const cards = document.querySelectorAll('.option-card');
+    if (!cards.length) return;
 
-  const totalPriceEls = document.querySelectorAll('#total-price');
-  const planBadgeEls = document.querySelectorAll('#plan-badge');
-  const summaryTierLabelEls = document.querySelectorAll('#summary-tier-label');
+    function updatePricing() {
+      let designSelected = false;
+      let developmentSelected = false;
+      let fastSelected = false;
 
-  if (!cards.length) return;
+      cards.forEach(function(card) {
+        const checkbox = card.querySelector('.toggle-input');
+        const featureKey = card.getAttribute('data-feature');
 
+        if (!checkbox) return;
 
-  function updatePricing() {
+        if (checkbox.checked) {
+          card.classList.add('active');
 
-    let designSelected = false;
-    let developmentSelected = false;
-    let fastSelected = false;
+          if (featureKey === 'design') {
+            designSelected = true;
+          }
 
+          if (featureKey === 'development') {
+            developmentSelected = true;
+          }
+
+          if (featureKey === 'fast') {
+            fastSelected = true;
+          }
+        } else {
+          card.classList.remove('active');
+        }
+
+        const featureItems = document.querySelectorAll(
+          '[data-feature-item="' + featureKey + '"]'
+        );
+
+        featureItems.forEach(function(item) {
+          if (checkbox.checked) {
+            item.style.setProperty('display', 'flex', 'important');
+          } else {
+            item.style.setProperty('display', 'none', 'important');
+          }
+        });
+      });
+
+      /*
+       * Calculate price
+       */
+      let total = 0;
+
+      if (designSelected) {
+        total = total + 200;
+      }
+
+      if (developmentSelected) {
+        total = total + 300;
+      }
+
+      if (fastSelected) {
+        total = total + 150;
+      }
+
+      /*
+       * Update price
+       */
+      totalPriceEls.forEach(function(element) {
+        element.innerText = total;
+      });
+
+      /*
+       * Update service name
+       */
+      let serviceName = '';
+
+      if (designSelected) {
+        serviceName = 'Design';
+      }
+
+      if (developmentSelected) {
+        if (serviceName !== '') {
+          serviceName = serviceName + ' & ';
+        }
+
+        serviceName = serviceName + 'Development';
+      }
+
+      if (fastSelected) {
+        if (serviceName !== '') {
+          serviceName = serviceName + ' & ';
+        }
+
+        serviceName = serviceName + 'Fast';
+      }
+
+      summaryTierLabelEls.forEach(function(element) {
+        if (serviceName !== '') {
+          element.innerText = serviceName;
+        } else {
+          element.innerText = 'No Services Selected';
+        }
+      });
+
+      /*
+       * Update badge
+       */
+      let badgeText = 'None';
+      let badgeClass =
+        'badge px-3 py-1 rounded-pill bg-secondary-subtle text-secondary fw-bold small';
+
+      if (designSelected && developmentSelected && fastSelected) {
+        badgeText = 'Premium';
+
+        badgeClass =
+          'badge px-3 py-1 rounded-pill bg-success-subtle text-success fw-bold small';
+      } else if (designSelected && developmentSelected) {
+        badgeText = 'Standard';
+
+        badgeClass =
+          'badge px-3 py-1 rounded-pill bg-warning-subtle text-warning fw-bold small';
+      } else if (designSelected || developmentSelected || fastSelected) {
+        badgeText = 'Basic';
+
+        badgeClass =
+          'badge px-3 py-1 rounded-pill bg-info-subtle text-info fw-bold small';
+      }
+
+      planBadgeEls.forEach(function(element) {
+        element.innerText = badgeText;
+        element.className = badgeClass;
+      });
+    }
+
+    /*
+     * Checkbox change
+     */
     cards.forEach(function(card) {
-
       const checkbox = card.querySelector('.toggle-input');
-      const featureKey = card.getAttribute('data-feature');
 
       if (!checkbox) return;
 
-
-      if (checkbox.checked) {
-
-        card.classList.add('active');
-
-        if (featureKey === 'design') {
-          designSelected = true;
-        }
-
-        if (featureKey === 'development') {
-          developmentSelected = true;
-        }
-
-        if (featureKey === 'fast') {
-          fastSelected = true;
-        }
-
-      } else {
-
-        card.classList.remove('active');
-
-      }
-
-
-      const featureItems = document.querySelectorAll(
-        '[data-feature-item="' + featureKey + '"]'
-      );
-
-      featureItems.forEach(function(item) {
-
-        if (checkbox.checked) {
-          item.style.setProperty('display', 'flex', 'important');
-        } else {
-          item.style.setProperty('display', 'none', 'important');
-        }
-
+      checkbox.addEventListener('change', function() {
+        updatePricing();
       });
 
+      /*
+       * Card click
+       */
+      card.addEventListener('click', function(e) {
+        if (e.target.closest('.switch')) {
+          return;
+        }
+
+        checkbox.checked = !checkbox.checked;
+        updatePricing();
+      });
     });
 
-
-    /* Calculate price */
-
-    let total = 0;
-
-    if (designSelected) {
-      total = total + 200;
-    }
-
-    if (developmentSelected) {
-      total = total + 300;
-    }
-
-    if (fastSelected) {
-      total = total + 150;
-    }
-
-
-    /* Update ALL price elements */
-
-    totalPriceEls.forEach(function(element) {
-      element.innerText = total;
-    });
-
-
-    /* Update service name */
-
-    let serviceName = '';
-
-    if (designSelected) {
-      serviceName = 'Design';
-    }
-
-    if (developmentSelected) {
-
-      if (serviceName !== '') {
-        serviceName = serviceName + ' & ';
-      }
-
-      serviceName = serviceName + 'Development';
-    }
-
-    if (fastSelected) {
-
-      if (serviceName !== '') {
-        serviceName = serviceName + ' & ';
-      }
-
-      serviceName = serviceName + 'Fast';
-    }
-
-
-    summaryTierLabelEls.forEach(function(element) {
-
-      if (serviceName !== '') {
-        element.innerText = serviceName;
-      } else {
-        element.innerText = 'No Services Selected';
-      }
-
-    });
-
-
-    /* Update badge */
-
-    let badgeText = 'None';
-    let badgeClass =
-      'badge px-3 py-1 rounded-pill bg-secondary-subtle text-secondary fw-bold small';
-
-
-    if (designSelected && developmentSelected && fastSelected) {
-
-      badgeText = 'Premium';
-
-      badgeClass =
-        'badge px-3 py-1 rounded-pill bg-success-subtle text-success fw-bold small';
-
-    } else if (designSelected && developmentSelected) {
-
-      badgeText = 'Standard';
-
-      badgeClass =
-        'badge px-3 py-1 rounded-pill bg-warning-subtle text-warning fw-bold small';
-
-    } else if (designSelected || developmentSelected || fastSelected) {
-
-      badgeText = 'Basic';
-
-      badgeClass =
-        'badge px-3 py-1 rounded-pill bg-info-subtle text-info fw-bold small';
-
-    }
-
-
-    planBadgeEls.forEach(function(element) {
-      element.innerText = badgeText;
-      element.className = badgeClass;
-    });
-
+    /*
+     * Initial calculation
+     */
+    updatePricing();
   }
 
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPricing);
+  } else {
+    initPricing();
+  }
 
-  /* Checkbox change */
-
-  cards.forEach(function(card) {
-
-    const checkbox = card.querySelector('.toggle-input');
-
-    if (!checkbox) return;
-
-
-    checkbox.addEventListener('change', function() {
-
-      updatePricing();
-
-    });
-
-
-    /* Card click */
-
-    card.addEventListener('click', function(e) {
-
-      if (e.target.closest('.switch')) {
-        return;
-      }
-
-      checkbox.checked = !checkbox.checked;
-
-      updatePricing();
-
-    });
-
-  });
-
-
-  /* Initial calculation */
-
-  updatePricing();
-
-}
-
-
-if (document.readyState === 'loading') {
-
-  document.addEventListener('DOMContentLoaded', initPricing);
-
-} else {
-
-  initPricing();
-
-}
+  /**
+   * Frequently Asked Questions Toggle
+   */
    * Frequently Asked Questions Toggle
    */
   document.querySelectorAll('.faq-item h3, .faq-item .faq-toggle, .faq-item .faq-header').forEach((faqItem) => {
