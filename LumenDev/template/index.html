@@ -1809,76 +1809,7 @@
     </div>
   </div>
 </section>
-<script>
-  (function() {
-    const cards = document.querySelectorAll('.option-card');
-    const totalPriceEl = document.getElementById('total-price');
-    const planBadge = document.getElementById('plan-badge');
-    const summaryTierLabel = document.getElementById('summary-tier-label');
 
-    if (!cards.length) return;
-
-    function updatePricing() {
-      let total = 0;
-      let activeNames = [];
-      let activeFeatures = [];
-
-      cards.forEach(card => {
-        const checkbox = card.querySelector('.toggle-input');
-        const featureKey = card.getAttribute('data-feature');
-        const price = parseInt(card.getAttribute('data-price'), 10) || 0;
-        const featureItems = document.querySelectorAll(`[data-feature-item="${featureKey}"]`);
-        const titleEl = card.querySelector('h4');
-        const title = titleEl ? titleEl.innerText.trim() : '';
-
-        if (checkbox && checkbox.checked) {
-          card.classList.add('active');
-          total += price;
-          if (title) activeNames.push(title);
-          if (featureKey) activeFeatures.push(featureKey);
-          featureItems.forEach(item => item.style.setProperty('display', 'flex', 'important'));
-        } else {
-          card.classList.remove('active');
-          featureItems.forEach(item => item.style.setProperty('display', 'none', 'important'));
-        }
-      });
-
-      if (totalPriceEl) totalPriceEl.innerText = total;
-      if (summaryTierLabel) summaryTierLabel.innerText = activeNames.length > 0 ? activeNames.join(' & ') : 'No Services Selected';
-
-      if (planBadge) {
-        if (activeFeatures.includes('design') && activeFeatures.includes('development')) {
-          planBadge.innerText = 'Standard';
-          planBadge.className = 'badge px-3 py-1 rounded-pill bg-warning-subtle text-warning fw-bold small';
-        } else if (activeFeatures.length > 1) {
-          planBadge.innerText = 'Custom Bundle';
-          planBadge.className = 'badge px-3 py-1 rounded-pill bg-success-subtle text-success fw-bold small';
-        } else if (activeFeatures.length === 1) {
-          planBadge.innerText = 'Basic';
-          planBadge.className = 'badge px-3 py-1 rounded-pill bg-info-subtle text-info fw-bold small';
-        } else {
-          planBadge.innerText = 'None';
-          planBadge.className = 'badge px-3 py-1 rounded-pill bg-secondary-subtle text-secondary fw-bold small';
-        }
-      }
-    }
-
-    cards.forEach(card => {
-      const checkbox = card.querySelector('.toggle-input');
-      if (!checkbox) return;
-      
-      checkbox.addEventListener('change', updatePricing);
-      
-      card.addEventListener('click', (e) => {
-        if (e.target.closest('.switch')) return; 
-        checkbox.checked = !checkbox.checked;
-        updatePricing();
-      });
-    });
-
-    updatePricing();
-  })();
-</script>
 
      <!---- Faq Section 
       <section id="faq" class="faq section light-background">
