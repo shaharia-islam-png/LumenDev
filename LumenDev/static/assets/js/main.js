@@ -179,22 +179,25 @@
   /*
  * Pricing Toggle
  */
+/*
+ * Pricing Toggle
+ */
 function initPricing() {
 
   const cards = document.querySelectorAll('.option-card');
-  const totalPriceEl = document.getElementById('total-price');
-  const planBadge = document.getElementById('plan-badge');
-  const summaryTierLabel = document.getElementById('summary-tier-label');
+
+  const totalPriceEls = document.querySelectorAll('#total-price');
+  const planBadgeEls = document.querySelectorAll('#plan-badge');
+  const summaryTierLabelEls = document.querySelectorAll('#summary-tier-label');
 
   if (!cards.length) return;
+
 
   function updatePricing() {
 
     let designSelected = false;
     let developmentSelected = false;
     let fastSelected = false;
-
-    let activeNames = [];
 
     cards.forEach(function(card) {
 
@@ -203,23 +206,21 @@ function initPricing() {
 
       if (!checkbox) return;
 
+
       if (checkbox.checked) {
 
         card.classList.add('active');
 
         if (featureKey === 'design') {
           designSelected = true;
-          activeNames.push('Design');
         }
 
         if (featureKey === 'development') {
           developmentSelected = true;
-          activeNames.push('Development');
         }
 
         if (featureKey === 'fast') {
           fastSelected = true;
-          activeNames.push('Fast');
         }
 
       } else {
@@ -227,6 +228,7 @@ function initPricing() {
         card.classList.remove('active');
 
       }
+
 
       const featureItems = document.querySelectorAll(
         '[data-feature-item="' + featureKey + '"]'
@@ -245,81 +247,108 @@ function initPricing() {
     });
 
 
-    /* Calculate price from selected options */
+    /* Calculate price */
 
     let total = 0;
 
     if (designSelected) {
-      total += 200;
+      total = total + 200;
     }
 
     if (developmentSelected) {
-      total += 300;
+      total = total + 300;
     }
 
     if (fastSelected) {
-      total += 150;
+      total = total + 150;
     }
 
 
-    /* Update total price */
+    /* Update ALL price elements */
 
-    if (totalPriceEl) {
-      totalPriceEl.innerText = total;
-    }
+    totalPriceEls.forEach(function(element) {
+      element.innerText = total;
+    });
 
 
     /* Update service name */
 
-    if (summaryTierLabel) {
+    let serviceName = '';
 
-      if (activeNames.length > 0) {
-        summaryTierLabel.innerText = activeNames.join(' & ');
-      } else {
-        summaryTierLabel.innerText = 'No Services Selected';
+    if (designSelected) {
+      serviceName = 'Design';
+    }
+
+    if (developmentSelected) {
+
+      if (serviceName !== '') {
+        serviceName = serviceName + ' & ';
       }
 
+      serviceName = serviceName + 'Development';
     }
+
+    if (fastSelected) {
+
+      if (serviceName !== '') {
+        serviceName = serviceName + ' & ';
+      }
+
+      serviceName = serviceName + 'Fast';
+    }
+
+
+    summaryTierLabelEls.forEach(function(element) {
+
+      if (serviceName !== '') {
+        element.innerText = serviceName;
+      } else {
+        element.innerText = 'No Services Selected';
+      }
+
+    });
 
 
     /* Update badge */
 
-    if (planBadge) {
+    let badgeText = 'None';
+    let badgeClass =
+      'badge px-3 py-1 rounded-pill bg-secondary-subtle text-secondary fw-bold small';
 
-      if (designSelected && developmentSelected && fastSelected) {
 
-        planBadge.innerText = 'Premium';
+    if (designSelected && developmentSelected && fastSelected) {
 
-        planBadge.className =
-          'badge px-3 py-1 rounded-pill bg-success-subtle text-success fw-bold small';
+      badgeText = 'Premium';
 
-      } else if (designSelected && developmentSelected) {
+      badgeClass =
+        'badge px-3 py-1 rounded-pill bg-success-subtle text-success fw-bold small';
 
-        planBadge.innerText = 'Standard';
+    } else if (designSelected && developmentSelected) {
 
-        planBadge.className =
-          'badge px-3 py-1 rounded-pill bg-warning-subtle text-warning fw-bold small';
+      badgeText = 'Standard';
 
-      } else if (designSelected || developmentSelected || fastSelected) {
+      badgeClass =
+        'badge px-3 py-1 rounded-pill bg-warning-subtle text-warning fw-bold small';
 
-        planBadge.innerText = 'Basic';
+    } else if (designSelected || developmentSelected || fastSelected) {
 
-        planBadge.className =
-          'badge px-3 py-1 rounded-pill bg-info-subtle text-info fw-bold small';
+      badgeText = 'Basic';
 
-      } else {
-
-        planBadge.innerText = 'None';
-
-        planBadge.className =
-          'badge px-3 py-1 rounded-pill bg-secondary-subtle text-secondary fw-bold small';
-
-      }
+      badgeClass =
+        'badge px-3 py-1 rounded-pill bg-info-subtle text-info fw-bold small';
 
     }
 
+
+    planBadgeEls.forEach(function(element) {
+      element.innerText = badgeText;
+      element.className = badgeClass;
+    });
+
   }
 
+
+  /* Checkbox change */
 
   cards.forEach(function(card) {
 
@@ -328,10 +357,10 @@ function initPricing() {
     if (!checkbox) return;
 
 
-    /* Switch change */
-
     checkbox.addEventListener('change', function() {
+
       updatePricing();
+
     });
 
 
@@ -352,7 +381,7 @@ function initPricing() {
   });
 
 
-  /* Initial price */
+  /* Initial calculation */
 
   updatePricing();
 
@@ -368,7 +397,6 @@ if (document.readyState === 'loading') {
   initPricing();
 
 }
-  /**
    * Frequently Asked Questions Toggle
    */
   document.querySelectorAll('.faq-item h3, .faq-item .faq-toggle, .faq-item .faq-header').forEach((faqItem) => {
